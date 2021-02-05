@@ -10,11 +10,22 @@ use App\Services\SendMailService;
 class SendMailController extends Controller
 {
     /**
-     * SendMailController constructor.
+     * The instance of the mail sending service.
+     *
+     * @var SendMailService
      */
-    public function __construct()
+    private $service;
+
+    /**
+     * SendMailController constructor.
+     *
+     * @param SendMailService $service
+     */
+    public function __construct(SendMailService $service)
     {
         $this->middleware(VerifyAPIToken::class);
+
+        $this->service = $service;
     }
 
     /**
@@ -26,6 +37,6 @@ class SendMailController extends Controller
     {
         $messages = $request->validated();
 
-        dispatch(new SendMailJob($messages, new SendMailService()));
+        $this->service->send($messages);
     }
 }

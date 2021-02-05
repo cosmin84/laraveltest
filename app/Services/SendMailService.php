@@ -2,20 +2,17 @@
 
 namespace App\Services;
 
-use App\Mail\DefaultMail;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendMailJob;
 
 class SendMailService
 {
     /**
      * Iterate over the array of messages and send e-mail.
      *
-     * @param $data
+     * @param $messages
      */
-    public function send($data)
+    public function send($messages)
     {
-        foreach($data['messages'] as $message) {
-            Mail::to($message['recipient'])->send(new DefaultMail($message));
-        }
+        dispatch(new SendMailJob($messages));
     }
 }

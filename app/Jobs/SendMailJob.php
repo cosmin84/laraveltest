@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Mail\DefaultMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class SendMailJob implements ShouldQueue
 {
@@ -20,22 +22,13 @@ class SendMailJob implements ShouldQueue
     private $messages;
 
     /**
-     * The instance of the mail sending service.
-     *
-     * @var
-     */
-    private $service;
-
-    /**
      * Create a new job instance.
      *
      * @param $messages
-     * @param $service
      */
-    public function __construct($messages, $service)
+    public function __construct($messages)
     {
         $this->messages = $messages;
-        $this->service = $service;
     }
 
     /**
@@ -45,6 +38,8 @@ class SendMailJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->service->send($this->messages);
+        foreach($this->messages['messages'] as $message) {
+            Mail::to($message['recipient'])->send(new DefaultMail($message));
+        }
     }
 }
