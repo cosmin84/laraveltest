@@ -24,6 +24,7 @@ class SendMailRequest extends FormRequest
     public function rules()
     {
         return [
+            'messages' => ['required', 'array'],
             'messages.*.subject' => ['required', 'string'],
             'messages.*.body' => ['required', 'string'],
             'messages.*.recipient' => ['required', 'email:filter'],
@@ -40,6 +41,8 @@ class SendMailRequest extends FormRequest
     public function messages()
     {
         return [
+            'messages.required' => 'The payload is invalid. Make sure the messages are contained in a field named "messages".',
+            'messages.array' => 'The payload is invalid. Make sure the "messages" field is an array.',
             'messages.*.subject.required' => 'The subject of the e-mail message is required.',
             'messages.*.body.required' => 'The body of the e-mail message is required.',
             'messages.*.recipient.required' => 'The e-mail address is required.',
