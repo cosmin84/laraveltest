@@ -4,24 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Middleware\VerifyAPIToken;
 use App\Http\Requests\SendMailRequest;
-use App\Jobs\SendMailJob;
-use App\Services\SendMailService;
+use App\Services\MailService;
 
-class SendMailController extends Controller
+class MailController extends Controller
 {
     /**
      * The instance of the mail sending service.
      *
-     * @var SendMailService
+     * @var MailService
      */
     private $service;
 
     /**
      * SendMailController constructor.
      *
-     * @param SendMailService $service
+     * @param MailService $service
      */
-    public function __construct(SendMailService $service)
+    public function __construct(MailService $service)
     {
         $this->middleware(VerifyAPIToken::class);
 
@@ -38,5 +37,10 @@ class SendMailController extends Controller
         $messages = $request->validated();
 
         $this->service->send($messages);
+    }
+
+    public function list()
+    {
+        return $this->service->list();
     }
 }
